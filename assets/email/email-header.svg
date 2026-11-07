@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 140" width="600" height="140">
+  <rect width="600" height="140" fill="#142522" />
+  <g transform="translate(40, 30)">
+    <g transform="scale(0.8)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  
+  <g id="jobwhistle-symbol">
+    <!-- Acoustic / Monitoring Radar Pulses -->
+    <path d="M 52 30 A 28 28 0 0 1 76 54" fill="none" stroke="#C8F169" stroke-width="4.5" stroke-linecap="round" opacity="0.45" />
+    <path d="M 57 23 A 38 38 0 0 1 88 54" fill="none" stroke="#C8F169" stroke-width="4" stroke-linecap="round" opacity="0.75" />
+    <path d="M 62 16 A 48 48 0 0 1 97 51" fill="none" stroke="#C8F169" stroke-width="3.5" stroke-linecap="round" opacity="1" />
+    
+    <!-- Precision Whistle Resonator Chamber & Body -->
+    <!-- Mouthpiece stem -->
+    <path d="M 12 50 L 36 50 L 36 68 L 12 68 C 9.5 68 8 66 8 63.5 L 8 54.5 C 8 52 9.5 50 12 50 Z" fill="#C8F169" />
+    <!-- Resonator Ball Chamber -->
+    <circle cx="48" cy="59" r="19" fill="#C8F169" />
+    <!-- Sound Aperture Slot / Bevel -->
+    <path d="M 36 50 L 44 38 L 52 38 L 48 50 Z" fill="#C8F169" />
+    <polygon points="40,49 46,39 48,49" fill="#142522" opacity="0.9" />
+    <!-- Resonator Core Pin / Lanyard Eyelet -->
+    <circle cx="48" cy="59" r="7.5" fill="#142522" />
+    <!-- Pulse Center Signal Dot -->
+    <circle cx="48" cy="38" r="2.5" fill="#C8F169" />
+  </g>
+</svg>
+    </g>
+    <g transform="translate(100, 12)">
+      <text x="0" y="38" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="32" font-weight="800" fill="#FFFFFF" letter-spacing="-0.03em">Job<tspan font-weight="500">whistle</tspan></text>
+      <text x="2" y="56" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="9" font-weight="700" fill="#A9C5B1" letter-spacing="0.25em">BY CODEBRISE</text>
+    </g>
+  </g>
+</svg>

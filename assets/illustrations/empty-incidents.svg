@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" width="400" height="260">
+    <rect width="400" height="260" fill="none" />
+    <circle cx="200" cy="110" r="54" fill="#142522" stroke="#19875D" stroke-width="2" />
+    <path d="M 180 110 L 194 124 L 222 96" fill="none" stroke="#19875D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="200" y="200" text-anchor="middle" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="15" font-weight="600" fill="#FFFFFF">All services operational</text>
+    <text x="200" y="222" text-anchor="middle" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="13" font-weight="400" fill="#A9C5B1">Zero active incidents detected</text>
+  </svg>

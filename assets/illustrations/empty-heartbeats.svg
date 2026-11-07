@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" width="400" height="260">
+    <rect width="400" height="260" fill="none" />
+    <circle cx="200" cy="110" r="60" fill="#142522" stroke="#2C3936" stroke-width="2" />
+    <path d="M 160 110 L 180 110 L 190 90 L 205 130 L 215 105 L 225 110 L 240 110" fill="none" stroke="#C8F169" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="200" y="215" text-anchor="middle" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="14" font-weight="500" fill="#A9C5B1">No cron heartbeats listening</text>
+  </svg>
