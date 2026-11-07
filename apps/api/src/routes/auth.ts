@@ -151,11 +151,14 @@ authApp.post('/register', async (c) => {
     expiresAt,
   };
 
-  return c.json({
-    success: true,
-    data: sessionData,
-    message: 'Registration successful.',
-  });
+  return c.json(
+    {
+      success: true,
+      data: sessionData,
+      message: 'Registration successful.',
+    },
+    201
+  );
 });
 
 // POST /login

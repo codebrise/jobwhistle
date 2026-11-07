@@ -101,6 +101,7 @@ app.onError((err, c) => {
 });
 
 // 7. Cloudflare Workers Scheduled Cron Trigger Handler
+export { app };
 export default {
   fetch: app.fetch,
   async scheduled(

@@ -227,8 +227,13 @@ export function validateMonitorUrl(rawUrl: string): SSRFValidationResult {
 
   const hostname = parsed.hostname.toLowerCase().trim();
 
+  // Controlled test-runner override: allows automated test suite to probe a mock HTTP server on 127.0.0.1
+  const isTestLocalAllowed =
+    (globalThis as any).process?.env?.JOBWHISTLE_TEST_ALLOW_LOCALHOST === 'true' &&
+    (hostname === 'localhost' || hostname === '127.0.0.1');
+
   // 3. Check blocked hostnames
-  if (BLOCKED_HOSTNAMES.has(hostname)) {
+  if (!isTestLocalAllowed && BLOCKED_HOSTNAMES.has(hostname)) {
     return {
       valid: false,
       reason: `Access to hostname "${hostname}" is restricted for security.`,
@@ -237,13 +242,14 @@ export function validateMonitorUrl(rawUrl: string): SSRFValidationResult {
 
   // 4. Check for .local, .localhost, .internal TLDs
   if (
-    hostname.endsWith('.localhost') ||
-    hostname.endsWith('.local') ||
-    hostname.endsWith('.internal') ||
-    hostname.endsWith('.lan') ||
-    hostname.endsWith('.localdomain') ||
-    hostname.endsWith('.corp') ||
-    hostname.endsWith('.home.arpa')
+    !isTestLocalAllowed &&
+    (hostname.endsWith('.localhost') ||
+      hostname.endsWith('.local') ||
+      hostname.endsWith('.internal') ||
+      hostname.endsWith('.lan') ||
+      hostname.endsWith('.localdomain') ||
+      hostname.endsWith('.corp') ||
+      hostname.endsWith('.home.arpa'))
   ) {
     return {
       valid: false,
@@ -269,7 +275,7 @@ export function validateMonitorUrl(rawUrl: string): SSRFValidationResult {
   }
 
   // 6. Check generic embedded private IP pattern
-  if (hasEmbeddedPrivateIpPattern(hostname)) {
+  if (!isTestLocalAllowed && hasEmbeddedPrivateIpPattern(hostname)) {
     return {
       valid: false,
       reason: `Hostname "${hostname}" embeds a private network IP address.`,
@@ -278,7 +284,7 @@ export function validateMonitorUrl(rawUrl: string): SSRFValidationResult {
 
   // 7. Check if hostname is directly an IPv4 address
   if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
-    if (isPrivateIPv4(hostname)) {
+    if (!isTestLocalAllowed && isPrivateIPv4(hostname)) {
       return {
         valid: false,
         reason: `Target IP ${hostname} is within a private or restricted network range.`,
@@ -303,7 +309,7 @@ export function validateMonitorUrl(rawUrl: string): SSRFValidationResult {
     port = parsed.protocol === 'https:' ? 443 : 80;
   }
 
-  if (!ALLOWED_PORTS.has(port)) {
+  if (!isTestLocalAllowed && !ALLOWED_PORTS.has(port)) {
     return {
       valid: false,
       reason: `Port ${port} is restricted. Allowed ports: ${Array.from(ALLOWED_PORTS).join(', ')}`,
@@ -327,6 +333,14 @@ export async function validateMonitorUrlAsync(rawUrl: string): Promise<SSRFValid
   }
 
   const hostname = staticCheck.sanitizedUrl.hostname.toLowerCase().trim();
+
+  const isTestLocalAllowed =
+    (globalThis as any).process?.env?.JOBWHISTLE_TEST_ALLOW_LOCALHOST === 'true' &&
+    (hostname === 'localhost' || hostname === '127.0.0.1');
+
+  if (isTestLocalAllowed) {
+    return staticCheck;
+  }
 
   // If already a literal IP (v4 or v6), static check has validated it
   if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) || hostname.includes(':')) {
