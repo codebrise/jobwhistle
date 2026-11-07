@@ -57,6 +57,7 @@ export interface MonitorRecord {
   lastCheckedAt: string | null;
   lastSuccessAt: string | null;
   lastFailureAt: string | null;
+  nextCheckAt?: string;
   active: boolean;
   createdAt: string;
   updatedAt: string;

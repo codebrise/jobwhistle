@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#0D1515" />
+  <circle cx="1050" cy="120" r="350" fill="#347D72" opacity="0.12" />
+  <circle cx="150" cy="550" r="280" fill="#C8F169" opacity="0.08" />
+  <g transform="translate(100, 100)">
+    <!-- Symbol -->
+    <g transform="scale(1.2)">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  
+  <g id="jobwhistle-symbol">
+    <!-- Acoustic / Monitoring Radar Pulses -->
+    <path d="M 52 30 A 28 28 0 0 1 76 54" fill="none" stroke="#C8F169" stroke-width="4.5" stroke-linecap="round" opacity="0.45" />
+    <path d="M 57 23 A 38 38 0 0 1 88 54" fill="none" stroke="#C8F169" stroke-width="4" stroke-linecap="round" opacity="0.75" />
+    <path d="M 62 16 A 48 48 0 0 1 97 51" fill="none" stroke="#C8F169" stroke-width="3.5" stroke-linecap="round" opacity="1" />
+    
+    <!-- Precision Whistle Resonator Chamber & Body -->
+    <!-- Mouthpiece stem -->
+    <path d="M 12 50 L 36 50 L 36 68 L 12 68 C 9.5 68 8 66 8 63.5 L 8 54.5 C 8 52 9.5 50 12 50 Z" fill="#C8F169" />
+    <!-- Resonator Ball Chamber -->
+    <circle cx="48" cy="59" r="19" fill="#C8F169" />
+    <!-- Sound Aperture Slot / Bevel -->
+    <path d="M 36 50 L 44 38 L 52 38 L 48 50 Z" fill="#C8F169" />
+    <polygon points="40,49 46,39 48,49" fill="#0D1515" opacity="0.9" />
+    <!-- Resonator Core Pin / Lanyard Eyelet -->
+    <circle cx="48" cy="59" r="7.5" fill="#0D1515" />
+    <!-- Pulse Center Signal Dot -->
+    <circle cx="48" cy="38" r="2.5" fill="#C8F169" />
+  </g>
+</svg>
+    </g>
+    <g transform="translate(140, 15)">
+      <text x="0" y="55" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="52" font-weight="800" fill="#FFFFFF" letter-spacing="-0.03em">Job<tspan font-weight="500">whistle</tspan></text>
+      <text x="4" y="85" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="12" font-weight="700" fill="#A9C5B1" letter-spacing="0.3em">BY CODEBRISE</text>
+    </g>
+  </g>
+  <g transform="translate(100, 270)">
+    <text x="0" y="50" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="64" font-weight="700" fill="#C8F169" letter-spacing="-0.03em">Know when something</text>
+    <text x="0" y="125" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="64" font-weight="700" fill="#FFFFFF" letter-spacing="-0.03em">goes quiet.</text>
+    <text x="0" y="190" font-family="system-ui, -apple-system, 'Geist', sans-serif" font-size="24" font-weight="400" fill="#A9C5B1">Lightweight website uptime, API endpoints, and scheduled-job monitoring.</text>
+  </g>
+  <g transform="translate(100, 530)">
+    <rect width="140" height="38" rx="8" fill="#142522" stroke="#2C3936" stroke-width="1.5" />
+    <circle cx="20" cy="19" r="5" fill="#19875D" />
+    <text x="35" y="24" font-family="system-ui, -apple-system, 'Geist Mono', monospace" font-size="13" font-weight="600" fill="#FFFFFF">HTTP 200 OK</text>
+    
+    <rect x="160" width="140" height="38" rx="8" fill="#142522" stroke="#2C3936" stroke-width="1.5" />
+    <circle cx="180" cy="19" r="5" fill="#C8F169" />
+    <text x="195" y="24" font-family="system-ui, -apple-system, 'Geist Mono', monospace" font-size="13" font-weight="600" fill="#FFFFFF">CRON IN-TIME</text>
+
+    <rect x="320" width="165" height="38" rx="8" fill="#142522" stroke="#2C3936" stroke-width="1.5" />
+    <circle cx="340" cy="19" r="5" fill="#347D72" />
+    <text x="355" y="24" font-family="system-ui, -apple-system, 'Geist Mono', monospace" font-size="13" font-weight="600" fill="#FFFFFF">ZERO DOWNTIME</text>
+  </g>
+</svg>

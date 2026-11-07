@@ -12,7 +12,8 @@ export interface IncidentRecord {
   targetType: IncidentTargetType;
   targetId: string;
   targetName: string;
-  targetUrlOrToken: string;
+  targetUrlOrToken?: string;
+  targetEndpoint: string;
   state: IncidentState;
   failureReason: string;
   suspectedAt: string;
