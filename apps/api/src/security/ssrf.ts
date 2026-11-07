@@ -347,9 +347,14 @@ export async function validateMonitorUrlAsync(rawUrl: string): Promise<SSRFValid
     return staticCheck;
   }
 
-  // Try resolving DNS using Node.js dns module if available
+  // Try resolving DNS using Node.js dns module if available in current runtime
   try {
-    const dns = await import('node:dns/promises');
+    const dnsModule = 'node:dns/promises';
+    const dns: any = await import(/* @vite-ignore */ dnsModule).catch(() => null);
+    if (!dns?.lookup) {
+      return staticCheck;
+    }
+
     const records = await dns.lookup(hostname, { all: true });
 
     for (const record of records) {

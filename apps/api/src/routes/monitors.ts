@@ -8,7 +8,7 @@ import {
   type MonitorWithStats,
 } from '@jobwhistle/contracts';
 import { productLimits } from '@jobwhistle/config';
-import { validateMonitorUrl, validateMonitorUrlAsync } from '../security/ssrf';
+import { validateMonitorUrlAsync } from '../security/ssrf';
 import { generateId } from '../security/crypto';
 import { executeHttpCheck } from '../services/monitoring/http-checker';
 import { IncidentLifecycleService } from '../services/monitoring/incident-lifecycle';
