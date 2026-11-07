@@ -1,4 +1,4 @@
-import { validateMonitorUrl } from '../../security/ssrf';
+import { validateMonitorUrlAsync } from '../../security/ssrf';
 import { productLimits } from '@jobwhistle/config';
 
 export interface HttpCheckResult {
@@ -16,8 +16,8 @@ export async function executeHttpCheck(opts: {
 }): Promise<HttpCheckResult> {
   const { url, method, expectedStatusCode, timeoutSeconds } = opts;
 
-  // 1. SSRF Safety Check
-  const ssrfCheck = validateMonitorUrl(url);
+  // 1. SSRF Safety Check (synchronous + pre-flight DNS verification)
+  const ssrfCheck = await validateMonitorUrlAsync(url);
   if (!ssrfCheck.valid) {
     return {
       isUp: false,
@@ -68,7 +68,7 @@ export async function executeHttpCheck(opts: {
         }
 
         const nextUrl = new URL(location, currentUrl).toString();
-        const nextSsrf = validateMonitorUrl(nextUrl);
+        const nextSsrf = await validateMonitorUrlAsync(nextUrl);
         if (!nextSsrf.valid) {
           clearTimeout(timeoutId);
           const responseTimeMs = Math.round(performance.now() - startTime);

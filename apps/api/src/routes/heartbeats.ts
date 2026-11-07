@@ -335,6 +335,131 @@ heartbeatsApp.post('/:id/rotate-token', authMiddleware, async (c) => {
   });
 });
 
+// POST /:id/pause - Pause heartbeat monitoring
+heartbeatsApp.post('/:id/pause', authMiddleware, async (c) => {
+  const workspace = c.get('workspace');
+  const id = c.req.param('id');
+  if (!id) {
+    return c.json({ success: false, error: { code: 'BAD_REQUEST', message: 'ID required' } }, 400);
+  }
+  const db = drizzle(c.env.DB, { schema });
+
+  const [existing] = await db
+    .select()
+    .from(schema.heartbeatTokens)
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      { success: false, error: { code: 'NOT_FOUND', message: 'Heartbeat not found.' } },
+      404
+    );
+  }
+
+  const nowIso = new Date().toISOString();
+  await db
+    .update(schema.heartbeatTokens)
+    .set({
+      active: false,
+      status: 'paused',
+      updatedAt: nowIso,
+    })
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    );
+
+  const [updated] = await db
+    .select()
+    .from(schema.heartbeatTokens)
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  return c.json({
+    success: true,
+    data: updated,
+    message: 'Heartbeat paused.',
+  });
+});
+
+// POST /:id/resume - Resume heartbeat monitoring
+heartbeatsApp.post('/:id/resume', authMiddleware, async (c) => {
+  const workspace = c.get('workspace');
+  const id = c.req.param('id');
+  if (!id) {
+    return c.json({ success: false, error: { code: 'BAD_REQUEST', message: 'ID required' } }, 400);
+  }
+  const db = drizzle(c.env.DB, { schema });
+
+  const [existing] = await db
+    .select()
+    .from(schema.heartbeatTokens)
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      { success: false, error: { code: 'NOT_FOUND', message: 'Heartbeat not found.' } },
+      404
+    );
+  }
+
+  const nowIso = new Date().toISOString();
+  const nextExpectedDate = new Date(Date.now() + existing.expectedIntervalMinutes * 60 * 1000);
+  const deadlineDate = new Date(nextExpectedDate.getTime() + existing.gracePeriodMinutes * 60 * 1000);
+
+  await db
+    .update(schema.heartbeatTokens)
+    .set({
+      active: true,
+      status: 'pending',
+      nextExpectedAt: nextExpectedDate.toISOString(),
+      deadlineAt: deadlineDate.toISOString(),
+      updatedAt: nowIso,
+    })
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    );
+
+  const [updated] = await db
+    .select()
+    .from(schema.heartbeatTokens)
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  return c.json({
+    success: true,
+    data: updated,
+    message: 'Heartbeat resumed.',
+  });
+});
+
 // DELETE /:id
 heartbeatsApp.delete('/:id', authMiddleware, async (c) => {
   const workspace = c.get('workspace');
@@ -343,6 +468,24 @@ heartbeatsApp.delete('/:id', authMiddleware, async (c) => {
     return c.json({ success: false, error: { code: 'BAD_REQUEST', message: 'ID required' } }, 400);
   }
   const db = drizzle(c.env.DB, { schema });
+
+  const [existing] = await db
+    .select()
+    .from(schema.heartbeatTokens)
+    .where(
+      and(
+        eq(schema.heartbeatTokens.id, id),
+        eq(schema.heartbeatTokens.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      { success: false, error: { code: 'NOT_FOUND', message: 'Heartbeat not found.' } },
+      404
+    );
+  }
 
   await db
     .delete(schema.heartbeatTokens)

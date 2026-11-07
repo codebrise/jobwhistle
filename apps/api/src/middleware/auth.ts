@@ -10,6 +10,7 @@ export interface Env {
   APP_ENV: string;
   APP_URL: string;
   WEB_ORIGIN: string;
+  CRON_SECRET?: string;
   RESEND_API_KEY?: string;
   EMAIL_FROM?: string;
 }

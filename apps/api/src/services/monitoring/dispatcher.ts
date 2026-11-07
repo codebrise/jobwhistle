@@ -43,11 +43,23 @@ export class MonitoringDispatcher {
 
     let errorCount = 0;
 
-    // Process concurrently up to batchSize
+    // Process concurrently up to batchSize with atomic lease advancement
     await Promise.all(
       dueMonitors.map(async (monitor) => {
         try {
-          // 1. Run HTTP check
+          // 1. Claim monitor immediately by advancing nextCheckAt forward
+          // This prevents concurrent worker double-probing during slow HTTP requests
+          const nextCheckDate = new Date(
+            Date.now() + monitor.intervalMinutes * 60 * 1000
+          );
+          await db
+            .update(schema.monitors)
+            .set({
+              nextCheckAt: nextCheckDate.toISOString(),
+            })
+            .where(eq(schema.monitors.id, monitor.id));
+
+          // 2. Run HTTP check
           const result = await executeHttpCheck({
             url: monitor.url,
             method: monitor.method,
@@ -55,7 +67,7 @@ export class MonitoringDispatcher {
             timeoutSeconds: monitor.timeoutSeconds,
           });
 
-          // 2. Persist check result
+          // 3. Persist check result
           const checkId = generateId('chk');
           await db.insert(schema.monitorChecks).values({
             id: checkId,
@@ -67,18 +79,7 @@ export class MonitoringDispatcher {
             createdAt: nowIso,
           });
 
-          // 3. Update nextCheckAt (now + intervalMinutes)
-          const nextCheckDate = new Date(
-            Date.now() + monitor.intervalMinutes * 60 * 1000
-          );
-          await db
-            .update(schema.monitors)
-            .set({
-              nextCheckAt: nextCheckDate.toISOString(),
-            })
-            .where(eq(schema.monitors.id, monitor.id));
-
-          // 4. Update incident state machine
+          // 4. Update incident state machine and monitor telemetry
           await this.incidentLifecycle.handleMonitorCheckResult(
             dbBinding,
             monitor,

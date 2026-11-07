@@ -8,7 +8,7 @@ import {
   type MonitorWithStats,
 } from '@jobwhistle/contracts';
 import { productLimits } from '@jobwhistle/config';
-import { validateMonitorUrl } from '../security/ssrf';
+import { validateMonitorUrl, validateMonitorUrlAsync } from '../security/ssrf';
 import { generateId } from '../security/crypto';
 import { executeHttpCheck } from '../services/monitoring/http-checker';
 import { IncidentLifecycleService } from '../services/monitoring/incident-lifecycle';
@@ -144,8 +144,8 @@ monitorsApp.post('/', async (c) => {
   const { name, url, intervalMinutes, timeoutSeconds, method, expectedStatusCode, active } =
     parseResult.data;
 
-  // 1. SSRF Check
-  const ssrfValidation = validateMonitorUrl(url);
+  // 1. SSRF Check (synchronous + pre-flight DNS verification)
+  const ssrfValidation = await validateMonitorUrlAsync(url);
   if (!ssrfValidation.valid) {
     return c.json(
       {
@@ -309,8 +309,31 @@ monitorsApp.get('/:id', async (c) => {
 monitorsApp.patch('/:id', async (c) => {
   const workspace = c.get('workspace');
   const id = c.req.param('id');
-  const body = await c.req.json().catch(() => null);
+  const db = drizzle(c.env.DB, { schema });
 
+  // 1. Verify monitor belongs to caller's workspace
+  const [existing] = await db
+    .select()
+    .from(schema.monitors)
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      {
+        success: false,
+        error: { code: 'NOT_FOUND', message: 'Monitor not found.' },
+      },
+      404
+    );
+  }
+
+  const body = await c.req.json().catch(() => null);
   const parseResult = UpdateMonitorSchema.safeParse(body);
   if (!parseResult.success) {
     return c.json(
@@ -328,7 +351,7 @@ monitorsApp.patch('/:id', async (c) => {
 
   const updates = parseResult.data;
   if (updates.url) {
-    const ssrfCheck = validateMonitorUrl(updates.url);
+    const ssrfCheck = await validateMonitorUrlAsync(updates.url);
     if (!ssrfCheck.valid) {
       return c.json(
         {
@@ -343,7 +366,6 @@ monitorsApp.patch('/:id', async (c) => {
     }
   }
 
-  const db = drizzle(c.env.DB, { schema });
   const nowIso = new Date().toISOString();
 
   await db
@@ -362,7 +384,12 @@ monitorsApp.patch('/:id', async (c) => {
   const [updated] = await db
     .select()
     .from(schema.monitors)
-    .where(eq(schema.monitors.id, id))
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
     .limit(1);
 
   return c.json({
@@ -372,11 +399,144 @@ monitorsApp.patch('/:id', async (c) => {
   });
 });
 
+// POST /:id/pause - Pause an active monitor
+monitorsApp.post('/:id/pause', async (c) => {
+  const workspace = c.get('workspace');
+  const id = c.req.param('id');
+  const db = drizzle(c.env.DB, { schema });
+
+  const [existing] = await db
+    .select()
+    .from(schema.monitors)
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      { success: false, error: { code: 'NOT_FOUND', message: 'Monitor not found.' } },
+      404
+    );
+  }
+
+  const nowIso = new Date().toISOString();
+  await db
+    .update(schema.monitors)
+    .set({
+      active: false,
+      status: 'paused',
+      updatedAt: nowIso,
+    })
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    );
+
+  const [updated] = await db
+    .select()
+    .from(schema.monitors)
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  return c.json({
+    success: true,
+    data: updated,
+    message: 'Monitor paused successfully.',
+  });
+});
+
+// POST /:id/resume - Resume a paused monitor
+monitorsApp.post('/:id/resume', async (c) => {
+  const workspace = c.get('workspace');
+  const id = c.req.param('id');
+  const db = drizzle(c.env.DB, { schema });
+
+  const [existing] = await db
+    .select()
+    .from(schema.monitors)
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      { success: false, error: { code: 'NOT_FOUND', message: 'Monitor not found.' } },
+      404
+    );
+  }
+
+  const nowIso = new Date().toISOString();
+  await db
+    .update(schema.monitors)
+    .set({
+      active: true,
+      status: 'pending',
+      nextCheckAt: nowIso,
+      updatedAt: nowIso,
+    })
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    );
+
+  const [updated] = await db
+    .select()
+    .from(schema.monitors)
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  return c.json({
+    success: true,
+    data: updated,
+    message: 'Monitor resumed successfully.',
+  });
+});
+
 // DELETE /:id - Delete monitor
 monitorsApp.delete('/:id', async (c) => {
   const workspace = c.get('workspace');
   const id = c.req.param('id');
   const db = drizzle(c.env.DB, { schema });
+
+  const [existing] = await db
+    .select()
+    .from(schema.monitors)
+    .where(
+      and(
+        eq(schema.monitors.id, id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return c.json(
+      { success: false, error: { code: 'NOT_FOUND', message: 'Monitor not found.' } },
+      404
+    );
+  }
 
   await db
     .delete(schema.monitors)
@@ -456,7 +616,12 @@ monitorsApp.post('/:id/check-now', async (c) => {
   const [refreshed] = await db
     .select()
     .from(schema.monitors)
-    .where(eq(schema.monitors.id, monitor.id))
+    .where(
+      and(
+        eq(schema.monitors.id, monitor.id),
+        eq(schema.monitors.workspaceId, workspace.id)
+      )
+    )
     .limit(1);
 
   return c.json({

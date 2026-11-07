@@ -126,5 +126,39 @@ describe('SSRF Protection Engine', () => {
       assert.strictEqual(res.valid, false, `Expected rejected for credentials in ${url}`);
     }
   });
+
+  it('blocks NAT64 and IPv4-mapped IPv6 pointing to private addresses', () => {
+    const mappedIps = [
+      'http://[64:ff9b::7f00:1]', // 127.0.0.1
+      'http://[64:ff9b::127.0.0.1]',
+      'http://[64:ff9b::c0a8:101]', // 192.168.1.1
+      'http://[64:ff9b::192.168.1.1]',
+      'http://[::ffff:127.0.0.1]',
+      'http://[::ffff:7f00:1]',
+      'http://[::ffff:10.0.0.1]',
+    ];
+
+    for (const url of mappedIps) {
+      const res = validateMonitorUrl(url);
+      assert.strictEqual(res.valid, false, `Expected blocked for mapped IPv6: ${url}`);
+    }
+  });
+
+  it('blocks wildcard DNS domains mapping private IP addresses', () => {
+    const wildcardUrls = [
+      'http://127.0.0.1.nip.io',
+      'http://192-168-1-1.sslip.io',
+      'http://localtest.me',
+      'http://sub.localtest.me',
+      'http://vcap.me',
+      'http://lvh.me',
+      'http://10.0.0.1.traefik.me',
+    ];
+
+    for (const url of wildcardUrls) {
+      const res = validateMonitorUrl(url);
+      assert.strictEqual(res.valid, false, `Expected blocked for wildcard DNS: ${url}`);
+    }
+  });
 });
 

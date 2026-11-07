@@ -4,8 +4,29 @@ import type { Env } from '../middleware/auth';
 
 const cronApp = new Hono<{ Bindings: Env }>();
 
-// POST /dispatch - Manually trigger monitoring scheduler execution
+// POST /dispatch - Trigger monitoring scheduler execution with cron secret validation
 cronApp.post('/dispatch', async (c) => {
+  // Validate cron authentication
+  const expectedSecret = c.env.CRON_SECRET;
+  if (expectedSecret) {
+    const headerSecret =
+      c.req.header('X-Jobwhistle-Cron-Secret') ||
+      c.req.header('Authorization')?.replace(/^Bearer\s+/i, '');
+
+    if (!headerSecret || headerSecret !== expectedSecret) {
+      return c.json(
+        {
+          success: false,
+          error: {
+            code: 'UNAUTHORIZED_CRON',
+            message: 'Unauthorized: Invalid or missing cron dispatch secret.',
+          },
+        },
+        401
+      );
+    }
+  }
+
   const dispatcher = new MonitoringDispatcher(
     c.env.RESEND_API_KEY,
     c.env.EMAIL_FROM
