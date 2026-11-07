@@ -11,3 +11,4 @@ export default function AppLayout({
 }) {
   return <DashboardShell>{children}</DashboardShell>;
 }
+

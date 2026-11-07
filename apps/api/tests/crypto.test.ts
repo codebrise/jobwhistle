@@ -39,3 +39,4 @@ describe('Security & Crypto Utilities', () => {
     assert.strictEqual(hash1.length, 64, 'SHA-256 hex string must be 64 characters long');
   });
 });
+

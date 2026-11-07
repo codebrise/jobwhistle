@@ -207,3 +207,4 @@ notificationsApp.patch('/preferences', async (c) => {
 });
 
 export { notificationsApp };
+

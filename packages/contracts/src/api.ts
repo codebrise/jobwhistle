@@ -25,3 +25,4 @@ export interface OverviewMetrics {
   uptimePercentage24h: number;
   avgResponseTimeMs: number;
 }
+

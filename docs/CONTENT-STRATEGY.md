@@ -16,3 +16,4 @@
 1. **GitHub Repository:** Open-source integration snippets and self-hosting documentation.
 2. **Product Hunt & Hacker News:** Technical "Show HN" explaining the serverless edge architecture on Cloudflare Workers + D1.
 3. **Indie Hackers & Dev.to:** Educational deep-dive on "Why your backup cron jobs fail silently and how to monitor them with heartbeats".
+

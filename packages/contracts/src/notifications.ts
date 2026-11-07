@@ -72,3 +72,4 @@ export interface NotificationEvent {
   reason: string;
   timestamp: string;
 }
+

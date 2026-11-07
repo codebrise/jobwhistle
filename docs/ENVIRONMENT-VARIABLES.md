@@ -23,3 +23,4 @@
 | `RESEND_API_KEY` | Resend API key for transactional emails | `re_123456789...` |
 | `EMAIL_FROM` | Sender address for alert emails | `Jobwhistle <alerts@jobwhistle.codebrise.com>` |
 | `CRON_SECRET` | Secret token to authenticate manual `/api/v1/cron/dispatch` calls | `<random_hex>` |
+

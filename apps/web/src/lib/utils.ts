@@ -24,3 +24,4 @@ export function formatDate(isoString: string | null | undefined): string {
     minute: '2-digit',
   });
 }
+

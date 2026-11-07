@@ -97,3 +97,4 @@ Lists incidents with optional `?state=open` or `?state=resolved` query filters.
 
 ### `GET /incidents/:id`
 Retrieves detailed incident record with full chronological event timeline.
+

@@ -16,3 +16,4 @@ All notable changes to the Jobwhistle platform are documented here.
 - **Notification Engine:** Resend transactional email adapter with professional HTML and plain-text templates, deduplication, and delivery tracking.
 - **Web Application & Dashboard:** Next.js 16 App Router application featuring full marketing pages, documentation portal, and interactive developer dashboard with latency charts and real-time probe telemetry.
 - **Testing Suite:** 14 automated unit tests covering SSRF protection, Web Crypto PBKDF2 operations, and incident state arithmetic.
+

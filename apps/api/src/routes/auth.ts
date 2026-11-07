@@ -305,3 +305,4 @@ authApp.post('/logout', authMiddleware, async (c) => {
 });
 
 export { authApp };
+

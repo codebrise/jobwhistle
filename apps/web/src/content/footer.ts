@@ -33,3 +33,4 @@ export const footerContent = {
   copyright: `© ${new Date().getFullYear()} Jobwhistle by CodeBrise. All rights reserved.`,
   tagline: 'Know when something goes quiet.',
 };
+

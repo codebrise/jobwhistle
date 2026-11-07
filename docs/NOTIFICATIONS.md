@@ -22,3 +22,4 @@ export interface NotificationProvider {
 ## 2. Deduplication & Idempotency
 
 Before sending an alert, the `NotificationDispatcher` checks the `notification_deliveries` table. If an alert has already been successfully delivered for that `(incidentId, channelId, eventType)` tuple, the duplicate send is suppressed. This guarantees that developers receive **exactly one email** when a service goes down, and **exactly one email** when it recovers.
+

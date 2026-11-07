@@ -15,3 +15,4 @@ export interface NotificationProvider {
   ): Promise<NotificationResult>;
   validateDestination(destination: string): boolean;
 }
+

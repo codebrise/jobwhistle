@@ -59,3 +59,4 @@ export interface HeartbeatWithDetails extends HeartbeatRecord {
   recentCheckIns: HeartbeatCheckInRecord[];
   activeIncidentId: string | null;
 }
+

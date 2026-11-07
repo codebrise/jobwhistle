@@ -68,3 +68,4 @@ export function CodeBlock({ snippets, className }: CodeBlockProps) {
     </div>
   );
 }
+

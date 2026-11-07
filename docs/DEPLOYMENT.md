@@ -49,3 +49,4 @@
    - `NEXT_PUBLIC_APP_URL`: `https://jobwhistle.codebrise.com`
    - `NEXT_PUBLIC_API_URL`: `https://api.jobwhistle.codebrise.com`
 4. Deploy!
+

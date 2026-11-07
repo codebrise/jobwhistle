@@ -30,3 +30,4 @@ export const faqContent = [
       'Jobwhistle is developed and maintained by CodeBrise, focused on building straightforward, high-utility developer tools.',
   },
 ];
+

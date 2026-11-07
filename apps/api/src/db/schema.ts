@@ -213,3 +213,4 @@ export const auditLogs = sqliteTable(
     workspaceIdx: index('audit_ws_idx').on(table.workspaceId),
   })
 );
+

@@ -74,3 +74,4 @@
 
 ### `notification_channels` & `notification_deliveries`
 - Stores channel destinations (email, webhook) and immutable delivery audit logs per incident.
+

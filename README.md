@@ -93,3 +93,4 @@ Full documentation is available in `docs/`:
 ## License
 
 Jobwhistle is developed and maintained by **CodeBrise**. All rights reserved.
+

@@ -32,3 +32,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === '' ? 1.0 : route.startsWith('/docs') ? 0.8 : 0.6,
   }));
 }
+

@@ -596,3 +596,4 @@ main().catch((err) => {
   console.error('Error generating assets:', err);
   process.exit(1);
 });
+

@@ -23,3 +23,4 @@ if (fs.existsSync(socialDir)) {
 }
 
 console.log('Public assets copied successfully.');
+

@@ -21,3 +21,4 @@ Monitoring probes run via **Cloudflare Cron Triggers** (`*/1 * * * *`):
 ## 2. Retention & Housekeeping
 
 Raw check records are purged after **7 days** to respect Cloudflare D1 storage limits. Aggregated uptime percentages (24h and 7d) and historical incident logs are permanently preserved.
+

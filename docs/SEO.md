@@ -18,3 +18,4 @@
 Declared in `app/layout.tsx`:
 - `@type: Organization` (CodeBrise)
 - `@type: SoftwareApplication` (Jobwhistle, Category: DeveloperApplication, Price: $0 Free Beta).
+

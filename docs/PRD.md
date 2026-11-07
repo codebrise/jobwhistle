@@ -33,3 +33,4 @@
 - **Provider:** Resend transactional email API with HTML and plain-text fallback templates.
 - **Channels:** Up to 2 active channels per workspace in free tier.
 - **Preferences:** Granular toggles for `notifyOnDown` and `notifyOnRecovery`.
+

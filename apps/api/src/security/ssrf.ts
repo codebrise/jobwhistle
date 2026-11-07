@@ -167,3 +167,4 @@ export function validateMonitorUrl(rawUrl: string): SSRFValidationResult {
     sanitizedUrl: parsed,
   };
 }
+

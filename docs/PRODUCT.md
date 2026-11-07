@@ -30,3 +30,4 @@ Unlike legacy observability platforms that bombard developers with convoluted AP
 5. **Defense by Default:** Comprehensive Server-Side Request Forgery (SSRF) defense protects private networks and cloud metadata from probing abuse.
 6. **Token-Based Cron Tracking:** Heartbeats listen for secret tokens whose plaintext is never stored in the database.
 7. **Transparent Limits:** Publicly documented quotas during beta with zero hidden fees.
+

@@ -11,3 +11,4 @@ export default function robots(): MetadataRoute.Robots {
     sitemap: `${brandConfig.appUrl}/sitemap.xml`,
   };
 }
+

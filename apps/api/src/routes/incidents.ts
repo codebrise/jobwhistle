@@ -118,3 +118,4 @@ incidentsApp.get('/:id', async (c) => {
 });
 
 export { incidentsApp };
+

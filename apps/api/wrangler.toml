@@ -16,3 +16,4 @@ APP_ENV = "production"
 APP_URL = "https://jobwhistle.codebrise.com"
 WEB_ORIGIN = "https://jobwhistle.codebrise.com"
 EMAIL_FROM = "Jobwhistle <alerts@jobwhistle.codebrise.com>"
+

@@ -91,3 +91,4 @@ All master assets reside in `assets/`:
 - `app-icons/`: Android adaptive icons, iOS App Store, PWA maskable icons.
 - `social/`: Open Graph (1200x630), Twitter card, GitHub preview.
 - `illustrations/`: Empty state graphics for monitors, heartbeats, and zero incidents.
+

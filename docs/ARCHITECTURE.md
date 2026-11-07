@@ -47,3 +47,4 @@ The project uses `pnpm workspaces`:
 - `packages/config`: Shared brand constants, theme tokens, and product limits.
 - `assets/`: Master brand assets (SVGs, PNGs, mobile app icons, favicons, illustrations).
 - `docs/`: Complete product, architecture, and security specifications.
+

@@ -24,3 +24,4 @@
 1. **Password Storage:** Handled via Web Crypto `crypto.subtle.deriveBits` using **PBKDF2-HMAC-SHA256** with 100,000 iterations and 16-byte cryptographically random salts. Plaintext passwords are never stored or logged.
 2. **Heartbeat Secrets:** Generated using 192 bits of entropy (`crypto.getRandomValues`). The database exclusively stores the **SHA-256 hash**, eliminating token recovery from database dumps.
 3. **Session Tokens:** 192-bit random tokens stored as SHA-256 digests in the `sessions` table.
+

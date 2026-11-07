@@ -71,3 +71,4 @@ Design tokens are declared via CSS custom properties in `tokens.css` and bound t
 - Focus rings: 2px solid `var(--accent)` with 2px offset.
 - All interactive elements possess explicit ARIA attributes and full keyboard tab stops.
 - Reduced motion: `@media (prefers-reduced-motion: reduce)` disables telemetry transitions and graph animations.
+
