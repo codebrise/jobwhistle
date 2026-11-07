@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/ui/badge';
@@ -12,6 +12,9 @@ import {
   ArrowLeft,
   RefreshCw,
   ExternalLink,
+  Play,
+  Pause,
+  Trash2,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -25,10 +28,12 @@ import type { MonitorWithStats } from '@jobwhistle/contracts';
 
 export default function MonitorDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const monitorId = params.monitorId as string;
   const [monitor, setMonitor] = React.useState<MonitorWithStats | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [checking, setChecking] = React.useState(false);
+  const [actionLoading, setActionLoading] = React.useState(false);
 
   const fetchDetail = React.useCallback(async () => {
     setLoading(true);
@@ -50,6 +55,33 @@ export default function MonitorDetailPage() {
     await apiRequest(`/api/v1/monitors/${monitorId}/check-now`, { method: 'POST' });
     await fetchDetail();
     setChecking(false);
+  };
+
+  const handleTogglePause = async () => {
+    if (!monitor) return;
+    setActionLoading(true);
+    const action = monitor.active ? 'pause' : 'resume';
+    await apiRequest(`/api/v1/monitors/${monitorId}/${action}`, { method: 'POST' });
+    await fetchDetail();
+    setActionLoading(false);
+  };
+
+  const handleDelete = async () => {
+    if (
+      !confirm(
+        'Are you sure you want to delete this monitor? All check telemetry and incident logs will be permanently deleted.'
+      )
+    ) {
+      return;
+    }
+    setActionLoading(true);
+    const res = await apiRequest(`/api/v1/monitors/${monitorId}`, { method: 'DELETE' });
+    if (res.success) {
+      router.push('/app/monitors');
+    } else {
+      alert(res.error?.message || 'Failed to delete monitor.');
+      setActionLoading(false);
+    }
   };
 
   // Prepare chart data
@@ -125,14 +157,45 @@ export default function MonitorDetailPage() {
 
         <div className="flex items-center space-x-2">
           <Button
+            variant="outline"
+            size="sm"
+            onClick={handleTogglePause}
+            disabled={actionLoading}
+            className="gap-1.5 text-xs text-[#A0ADA7] hover:text-white"
+          >
+            {monitor.active ? (
+              <>
+                <Pause className="w-3.5 h-3.5" />
+                <span>Pause</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 text-[#C8F169]" />
+                <span>Resume</span>
+              </>
+            )}
+          </Button>
+
+          <Button
             variant="lime"
             size="sm"
             onClick={handleCheckNow}
-            disabled={checking}
+            disabled={checking || actionLoading}
             className="gap-1.5 text-xs"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${checking ? 'animate-spin' : ''}`} />
             <span>{checking ? 'Probing...' : 'Check Now'}</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDelete}
+            disabled={actionLoading}
+            className="gap-1 text-xs text-[#A0ADA7] hover:text-[#D45252] p-2"
+            title="Delete Monitor"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/ui/badge';
@@ -14,16 +14,21 @@ import {
   RefreshCw,
   Key,
   CheckCircle2,
+  Pause,
+  Play,
+  Trash2,
 } from 'lucide-react';
 import type { HeartbeatWithDetails } from '@jobwhistle/contracts';
 
 export default function HeartbeatDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const heartbeatId = params.heartbeatId as string;
   const [heartbeat, setHeartbeat] = React.useState<HeartbeatWithDetails | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [rotatedToken, setRotatedToken] = React.useState<string | null>(null);
   const [rotating, setRotating] = React.useState(false);
+  const [actionLoading, setActionLoading] = React.useState(false);
 
   const fetchDetail = React.useCallback(async () => {
     setLoading(true);
@@ -60,6 +65,33 @@ export default function HeartbeatDetailPage() {
       await fetchDetail();
     }
     setRotating(false);
+  };
+
+  const handleTogglePause = async () => {
+    if (!heartbeat) return;
+    setActionLoading(true);
+    const action = heartbeat.active ? 'pause' : 'resume';
+    await apiRequest(`/api/v1/heartbeats/${heartbeatId}/${action}`, { method: 'POST' });
+    await fetchDetail();
+    setActionLoading(false);
+  };
+
+  const handleDelete = async () => {
+    if (
+      !confirm(
+        'Are you sure you want to delete this heartbeat monitor? All check-in history and incident logs will be permanently deleted.'
+      )
+    ) {
+      return;
+    }
+    setActionLoading(true);
+    const res = await apiRequest(`/api/v1/heartbeats/${heartbeatId}`, { method: 'DELETE' });
+    if (res.success) {
+      router.push('/app/heartbeats');
+    } else {
+      alert(res.error?.message || 'Failed to delete heartbeat.');
+      setActionLoading(false);
+    }
   };
 
   if (loading && !heartbeat) {
@@ -126,11 +158,42 @@ export default function HeartbeatDetailPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={handleRotateToken}
-            disabled={rotating}
-            className="text-xs text-[#A0ADA7] hover:text-[#D45252]"
+            onClick={handleTogglePause}
+            disabled={actionLoading}
+            className="gap-1.5 text-xs text-[#A0ADA7] hover:text-white"
           >
-            Rotate Secret Token
+            {heartbeat.active ? (
+              <>
+                <Pause className="w-3.5 h-3.5" />
+                <span>Pause</span>
+              </>
+            ) : (
+              <>
+                <Play className="w-3.5 h-3.5 text-[#C8F169]" />
+                <span>Resume</span>
+              </>
+            )}
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRotateToken}
+            disabled={rotating || actionLoading}
+            className="text-xs text-[#A0ADA7] hover:text-white"
+          >
+            Rotate Token
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDelete}
+            disabled={actionLoading}
+            className="gap-1 text-xs text-[#A0ADA7] hover:text-[#D45252] p-2"
+            title="Delete Heartbeat"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
           </Button>
         </div>
       </div>

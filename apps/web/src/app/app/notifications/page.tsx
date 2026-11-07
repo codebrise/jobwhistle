@@ -14,7 +14,7 @@ export default function NotificationsSettingsPage() {
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [name, setName] = React.useState('');
   const [destination, setDestination] = React.useState('');
-  const [provider, setProvider] = React.useState<'email' | 'webhook'>('email');
+  const provider = 'email' as const;
   const [error, setError] = React.useState<string | null>(null);
 
   // Preferences
@@ -131,25 +131,27 @@ export default function NotificationsSettingsPage() {
                 <label className="text-xs text-[#A0ADA7] font-semibold uppercase">Channel Type</label>
                 <select
                   value={provider}
-                  onChange={(e) => setProvider(e.target.value as 'email' | 'webhook')}
-                  className="flex h-10 w-full rounded-lg border border-[#2C3936] bg-[#0D1515] px-3 py-2 text-sm text-[#EAF0EC] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8F169]"
+                  disabled
+                  className="flex h-10 w-full rounded-lg border border-[#2C3936] bg-[#0D1515] px-3 py-2 text-sm text-[#EAF0EC] opacity-80 cursor-not-allowed"
                 >
-                  <option value="email">Email</option>
-                  <option value="webhook">HTTP Webhook</option>
+                  <option value="email">Email Notification (V1 Active)</option>
                 </select>
+                <p className="text-[10px] text-[#A0ADA7]">
+                  Webhooks, Slack, Discord & Telegram integrations are scheduled for V1.1.
+                </p>
               </div>
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs text-[#A0ADA7] font-semibold uppercase">
-                {provider === 'email' ? 'Recipient Email Address' : 'Webhook Destination URL'}
+                Recipient Email Address
               </label>
               <Input
                 required
-                type={provider === 'email' ? 'email' : 'url'}
+                type="email"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                placeholder={provider === 'email' ? 'alerts@yourteam.com' : 'https://hooks.yourdomain.com/alerts'}
+                placeholder="alerts@yourteam.com"
               />
             </div>
 
