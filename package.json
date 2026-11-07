@@ -1,0 +1,19 @@
+{
+  "name": "jobwhistle-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jobwhistle - Website uptime and scheduled-job monitoring by CodeBrise",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
+    "dev:web": "pnpm --filter @jobwhistle/web dev",
+    "dev:api": "pnpm --filter @jobwhistle/api dev",
+    "typecheck": "pnpm -r run typecheck"
+  },
+  "packageManager": "pnpm@10.16.1",
+  "devDependencies": {
+    "@types/node": "^22.13.9",
+    "typescript": "^5.7.3"
+  }
+}
