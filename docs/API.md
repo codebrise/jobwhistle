@@ -16,7 +16,7 @@ Creates a new user, default workspace, and default email notification channel.
   "email": "alex@domain.com",
   "password": "SecurePassword123!"
 }
-// Response (200 OK)
+// Response (201 Created)
 {
   "success": true,
   "data": {
@@ -46,10 +46,10 @@ Retrieves authenticated profile and active workspace.
 ## 2. Monitor Endpoints
 
 ### `GET /monitors`
-Lists all monitors with 24h & 7d uptime percentages and P95 latency.
+Lists all monitors with 24h & 7d uptime percentages and average latency.
 
 ### `POST /monitors`
-Creates a monitor and performs an initial connectivity probe immediately.
+Creates a monitor, validates URL against SSRF and wildcard DNS, and performs an initial connectivity probe immediately.
 ```json
 {
   "name": "Production API",
@@ -64,6 +64,18 @@ Creates a monitor and performs an initial connectivity probe immediately.
 
 ### `GET /monitors/:id`
 Retrieves single monitor details along with recent probe check history.
+
+### `PATCH /monitors/:id`
+Updates monitor configuration (strictly scoped to owning workspace).
+
+### `POST /monitors/:id/pause`
+Pauses probe checks for the monitor. Sets `active: false, status: 'paused'`.
+
+### `POST /monitors/:id/resume`
+Resumes probe checks for the monitor. Sets `active: true, status: 'pending'`.
+
+### `DELETE /monitors/:id`
+Permanently deletes monitor and cascades check telemetry.
 
 ### `POST /monitors/:id/check-now`
 Triggers an immediate on-demand probe check, updates state, and returns latest latency.
@@ -85,8 +97,23 @@ Creates a heartbeat, generates a cryptographically random secret token, stores i
 }
 ```
 
+### `GET /heartbeats/:id`
+Retrieves heartbeat details, recent check-in timestamps, and integration code snippets (curl, bash, node, python, php).
+
+### `POST /heartbeats/:id/pause`
+Pauses heartbeat tracking.
+
+### `POST /heartbeats/:id/resume`
+Resumes heartbeat tracking, resetting expectation deadline.
+
+### `POST /heartbeats/:id/rotate-token`
+Generates a new cryptographically random token, hashes and saves it, and immediately invalidates the previous token.
+
+### `DELETE /heartbeats/:id`
+Permanently deletes heartbeat monitor and check-in history.
+
 ### `GET /heartbeats/check-in/:token` or `POST /heartbeats/check-in/:token`
-Public ping check-in endpoint for scheduled jobs. Hashes incoming token, records arrival timestamp, recalculates deadline, and closes any open incident.
+Public check-in endpoint for scheduled jobs. Hashes incoming token, records arrival timestamp, recalculates deadline, and closes any open incident.
 
 ---
 
@@ -98,3 +125,42 @@ Lists incidents with optional `?state=open` or `?state=resolved` query filters.
 ### `GET /incidents/:id`
 Retrieves detailed incident record with full chronological event timeline.
 
+---
+
+## 5. Notification Endpoints
+
+### `GET /notifications/channels`
+Lists notification channels configured for the workspace.
+
+### `POST /notifications/channels`
+Adds an alert channel (V1 supports email; webhooks/Slack/Discord planned for V1.1).
+```json
+{
+  "name": "Primary SRE On-Call",
+  "provider": "email",
+  "destination": "sre-alerts@company.com"
+}
+```
+
+### `DELETE /notifications/channels/:id`
+Removes notification channel.
+
+### `GET /notifications/preferences`
+Retrieves alerting preferences (`notifyOnDown`, `notifyOnRecovery`).
+
+### `PATCH /notifications/preferences`
+Updates alerting preferences.
+
+---
+
+## 6. Overview & System Telemetry
+
+### `GET /overview`
+Returns workspace telemetry metrics (monitors, heartbeats, open incidents, rolling uptime, avg latency).
+
+---
+
+## 7. Cron Scheduler Dispatcher
+
+### `POST /cron/dispatch`
+Invoked on schedule by Cloudflare Cron Triggers or external runner. Requires `X-Jobwhistle-Cron-Secret` header matching `CRON_SECRET`.
