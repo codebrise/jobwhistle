@@ -1,0 +1,29 @@
+{
+  "name": "@jobwhistle/api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Jobwhistle Backend API and Monitoring Engine on Cloudflare Workers",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "test": "tsx --test tests/**/*.test.ts"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
+    "@jobwhistle/config": "workspace:*",
+    "@jobwhistle/contracts": "workspace:*",
+    "drizzle-orm": "^0.40.0",
+    "hono": "^4.7.4",
+    "resend": "^4.1.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "drizzle-kit": "^0.30.5",
+    "tsx": "^4.23.15",
+    "wrangler": "^3.114.0"
+  }
+}

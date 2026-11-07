@@ -12,10 +12,14 @@ export const brandConfig = {
   description:
     'Lightweight website uptime and scheduled-job monitoring for developers and independent teams.',
   appUrl:
-    (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_APP_URL) ||
+    (typeof globalThis !== 'undefined' &&
+      (globalThis as unknown as { process?: { env?: Record<string, string> } })
+        .process?.env?.NEXT_PUBLIC_APP_URL) ||
     'https://jobwhistle.codebrise.com',
   apiUrl:
-    (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) ||
+    (typeof globalThis !== 'undefined' &&
+      (globalThis as unknown as { process?: { env?: Record<string, string> } })
+        .process?.env?.NEXT_PUBLIC_API_URL) ||
     'https://api.jobwhistle.codebrise.com',
   supportEmail: 'support@codebrise.com',
   docsUrl: '/docs',
